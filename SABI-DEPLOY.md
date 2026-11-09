@@ -25,3 +25,5 @@ Based on https://github.com/DarkBytee/DuckAiChat (MIT license retained in LICENS
 - Home and sidebar have iridescent SABI-AI marks. A five-second full-screen black welcome celebration plays on every page load and whenever a new conversation is created, then fades out to reveal the chat. Reduced-motion is respected.
 
 - Glowing pink and mint points orbit their elliptical logo lines in opposite directions in both main and sidebar logos, with reduced-motion support.
+
+- Fonts are hosted under public/fonts rather than loaded from Google Fonts. This reduces external dependencies but does not solve blocked networks or Cloudflare routing.
