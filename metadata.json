@@ -1,0 +1,6 @@
+{
+  "name": "DuckAI Chat Studio",
+  "description": "کلاینت وب و موبایل DuckDuckGo AI Chat (duck.ai) با رابط کاربری شبیه ChatGPT، پشتیبانی از سوییچ مدل‌ها، ارسال تصویر WebP، تحلیل فایل‌های کد و تولید تصویر",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

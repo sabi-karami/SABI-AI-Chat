@@ -1,0 +1,21 @@
+# Render Blueprint — one-click deployment for DuckAI Chat Studio
+# Docs: https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: duckai-chat-studio
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm ci && npm run build && cp -r public .next/standalone/public && cp -r .next/static .next/standalone/.next/static
+    startCommand: node .next/standalone/server.js
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: HOSTNAME
+        value: 0.0.0.0
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: DUCK_PROXY
+        sync: false
