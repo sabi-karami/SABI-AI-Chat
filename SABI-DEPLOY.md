@@ -27,3 +27,6 @@ Based on https://github.com/DarkBytee/DuckAiChat (MIT license retained in LICENS
 - Glowing pink and mint points orbit their elliptical logo lines in opposite directions in both main and sidebar logos, with reduced-motion support.
 
 - Fonts are hosted under public/fonts rather than loaded from Google Fonts. This reduces external dependencies but does not solve blocked networks or Cloudflare routing.
+
+## Additional hostname 2026-11-09
+- https://ai.psmc.ir serves the same Next.js service directly (not a redirect). Cloudflare zone psmc.ir, proxied DNS A record eb6bbf4f18223fea574017f6e90e8661 to existing instance. Nginx /etc/nginx/sites-available/sabichat and /etc/nginx/conf.d/sabichat-limits.conf allow the hostname and its Origin. Multi-host self-signed origin cert /etc/nginx/sabichat-multi; both zones SSL Full. Browser localStorage is isolated by hostname.
