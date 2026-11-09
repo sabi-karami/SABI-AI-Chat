@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import {
   Plus,
   MessageSquare,
+  Search,
+  Pin,
   Trash2,
   Pencil,
   Check,
@@ -19,6 +21,8 @@ export interface ChatSessionItem {
   model: string;
   updatedAt: number;
   messageCount: number;
+  pinned?: boolean;
+  searchText?: string;
 }
 
 interface ChatSidebarProps {
@@ -26,6 +30,7 @@ interface ChatSidebarProps {
   activeSessionId: string;
   onSelectSession: (id: string) => void;
   onNewChat: () => void;
+  onTogglePin: (id: string) => void;
   onRenameSession: (id: string, newTitle: string) => void;
   onDeleteSession: (id: string) => void;
   onClearAllSessions: () => void;
@@ -40,6 +45,7 @@ export function ChatSidebar({
   activeSessionId,
   onSelectSession,
   onNewChat,
+  onTogglePin,
   onRenameSession,
   onDeleteSession,
   onClearAllSessions,
@@ -50,6 +56,12 @@ export function ChatSidebar({
 }: ChatSidebarProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
+  const visibleSessions = sessions
+    .filter((session) => !normalizedQuery || `${session.title} ${session.searchText || ''}`.toLocaleLowerCase().includes(normalizedQuery))
+    .slice()
+    .sort((a, b) => Number(Boolean(b.pinned)) - Number(Boolean(a.pinned)) || b.updatedAt - a.updatedAt);
 
   const handleStartRename = (session: ChatSessionItem, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -108,6 +120,13 @@ export function ChatSidebar({
         </button>
       </div>
 
+      <div className="px-3.5 pb-1">
+        <label className="sabi-search-box">
+          <Search size={16} aria-hidden="true" />
+          <input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="جستجو در گفتگوها..." aria-label="جستجو در عنوان و متن گفتگوها" />
+          {searchQuery && <button type="button" onClick={() => setSearchQuery('')} aria-label="پاک کردن جستجو"><X size={14} /></button>}
+        </label>
+      </div>
       {/* Chat History List */}
       <div className="flex-1 overflow-y-auto px-3 py-2 space-y-1">
         <div className="px-2.5 py-1.5 flex items-center justify-between text-xs font-medium text-zinc-400 dark:text-zinc-500">
@@ -123,7 +142,8 @@ export function ChatSidebar({
           )}
         </div>
 
-        {sessions.map((session) => {
+        {visibleSessions.length === 0 && <p className="px-3 py-5 text-center text-xs text-zinc-500" role="status">گفتگویی پیدا نشد.</p>}
+        {visibleSessions.map((session) => {
           const isActive = session.id === activeSessionId;
           const isEditing = editingId === session.id;
           const modelMeta = MODEL_OPTIONS.find((m) => m.id === session.model);
@@ -192,6 +212,14 @@ export function ChatSidebar({
                   </button>
 
                   <div className="flex items-center gap-0.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => onTogglePin(session.id)}
+                      aria-label={session.pinned ? `برداشتن سنجاق ${session.title}` : `سنجاق کردن ${session.title}`}
+                      title={session.pinned ? 'برداشتن سنجاق' : 'سنجاق گفتگو'}
+                      aria-pressed={Boolean(session.pinned)}
+                      className={`p-1.5 rounded-xl hover:bg-zinc-200/70 dark:hover:bg-zinc-700/60 transition-colors cursor-pointer ${session.pinned ? 'text-amber-500' : 'text-zinc-400'}`}
+                    ><Pin className="w-3.5 h-3.5" fill={session.pinned ? 'currentColor' : 'none'} /></button>
                     <button
                       type="button"
                       onClick={(e) => handleStartRename(session, e)}

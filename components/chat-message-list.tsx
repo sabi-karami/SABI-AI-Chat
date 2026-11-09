@@ -81,6 +81,7 @@ interface ChatMessageListProps {
   onEditMessage?: (messageId: string, newText: string) => void;
   onRegenerateMessage?: (messageId: string) => void;
   onOpenImageLightbox?: (item: LightboxImageItem) => void;
+  onChooseStarter?: (text: string) => void;
 }
 
 function CodeBlock({
@@ -141,6 +142,7 @@ export function ChatMessageList({
   onEditMessage,
   onRegenerateMessage,
   onOpenImageLightbox,
+  onChooseStarter,
 }: ChatMessageListProps) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [activeBubbleId, setActiveBubbleId] = useState<string | null>(null);
@@ -192,6 +194,24 @@ export function ChatMessageList({
         >
           چطور می‌توانم کمکتان کنم؟
         </h1>
+        {onChooseStarter && (
+          <div className="sabi-starters" aria-label="ایده‌هایی برای شروع">
+            <p>یک ایده برای شروع انتخاب کن</p>
+            <div className="sabi-starters-grid">
+              {[
+                { icon: '✦', title: 'ایده‌پردازی', text: 'برای پروژه‌ام چند ایده خلاقانه و عملی پیشنهاد بده.' },
+                { icon: '✎', title: 'نوشتن و ویرایش', text: 'کمکم کن یک متن روان و حرفه‌ای بنویسم. اول از من درباره موضوع و مخاطب بپرس.' },
+                { icon: '◇', title: 'یادگیری آسان', text: 'یک موضوع را ساده و مرحله‌به‌مرحله با مثال به من آموزش بده. اول بپرس چه موضوعی مد نظرم است.' },
+                { icon: '⌘', title: 'کمک در کدنویسی', text: 'در حل یک مسئله برنامه‌نویسی کمکم کن. اول زبان و جزئیات مسئله را بپرس.' },
+              ].map((starter) => (
+                <button type="button" key={starter.title} onClick={() => onChooseStarter(starter.text)} className="sabi-starter-card">
+                  <span className="sabi-starter-icon" aria-hidden="true">{starter.icon}</span>
+                  <span><strong>{starter.title}</strong><small>{starter.text}</small></span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     );
   }

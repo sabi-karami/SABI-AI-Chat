@@ -210,3 +210,38 @@
 .sabi-hero.sabi-hero-sidebar { width: 220px; min-height: 96px; margin: 0; }
 .sabi-hero-sidebar .sabi-hero-word { font-size: clamp(2.1rem, 2.6vw, 2.55rem); }
 .sabi-hero-sidebar .sabi-hero-spark { font-size: .7rem; }
+
+/* Practical, quiet workspace tools that fit the iridescent SABI-AI identity. */
+.sabi-search-box {
+  display: flex; align-items: center; gap: .55rem; min-height: 42px;
+  padding: 0 .75rem; border: 1px solid #dedee4; border-radius: 14px;
+  background: rgba(255,255,255,.65); color: #71717a;
+  transition: border-color .2s, box-shadow .2s;
+}
+.sabi-search-box:focus-within { border-color: #c78eaa; box-shadow: 0 0 0 3px rgba(202,118,155,.13); }
+.sabi-search-box input { width: 100%; min-width: 0; background: transparent; outline: none; color: #27272a; font-size: .75rem; }
+.sabi-search-box input::placeholder { color: #a1a1aa; }
+.sabi-search-box button { color: #71717a; cursor: pointer; padding: .25rem; }
+.dark .sabi-search-box { background: rgba(24,24,27,.65); border-color: #3f3f46; color: #a1a1aa; }
+.dark .sabi-search-box input { color: #f4f4f5; }
+.sabi-starters { width: min(100%, 580px); margin-top: 1.75rem; }
+.sabi-starters > p { font-size: .7rem; text-align: center; color: #71717a; margin-bottom: .75rem; }
+.sabi-starters-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .55rem; }
+.sabi-starter-card {
+  display: flex; align-items: flex-start; gap: .7rem; text-align: right;
+  padding: .85rem; border: 1px solid #e4e4e7; border-radius: 17px;
+  background: rgba(255,255,255,.72); color: #3f3f46; cursor: pointer;
+  transition: transform .2s, border-color .2s, box-shadow .2s;
+}
+.sabi-starter-card:hover { transform: translateY(-2px); border-color: #dda8c0; box-shadow: 0 8px 22px rgba(81,47,72,.09); }
+.sabi-starter-card:focus-visible { outline: 2px solid #d77ea4; outline-offset: 3px; }
+.sabi-starter-icon { display: grid; place-items: center; flex: none; width: 29px; height: 29px; border-radius: 10px; background: #fbeaf1; color: #b53d70; font-size: .9rem; }
+.sabi-starter-card strong { display: block; font-size: .77rem; line-height: 1.5; }
+.sabi-starter-card small { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-top: .2rem; color: #71717a; font-size: .65rem; line-height: 1.65; }
+.dark .sabi-starters > p { color: #a1a1aa; }
+.dark .sabi-starter-card { background: rgba(39,39,42,.48); border-color: #3f3f46; color: #f4f4f5; }
+.dark .sabi-starter-card:hover { border-color: #b7789c; box-shadow: 0 8px 26px rgba(0,0,0,.2); }
+.dark .sabi-starter-icon { background: rgba(237,124,172,.13); color: #f2abc9; }
+.dark .sabi-starter-card small { color: #a1a1aa; }
+@media (max-width: 380px) { .sabi-starter-card { padding: .65rem; gap: .45rem; } .sabi-starter-card small { -webkit-line-clamp: 1; } }
+@media (prefers-reduced-motion: reduce) { .sabi-starter-card { transition: none; } .sabi-starter-card:hover { transform: none; } }

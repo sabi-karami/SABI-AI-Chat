@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Menu, Plus } from 'lucide-react';
+import { Menu, Plus, Download } from 'lucide-react';
 import {
   resolveModel,
   formatFileToPromptChunk,
@@ -46,6 +46,7 @@ interface ConversationRecord {
   title: string;
   model: string;
   updatedAt: number;
+  pinned?: boolean;
   messages: UIMessage[];
   history: DuckHistoryMessage[];
 }
@@ -267,6 +268,7 @@ export default function DuckAIChatApp() {
   };
 
   const handleClearAllSessions = () => {
+    if (!window.confirm('همهٔ گفتگوهای این مرورگر حذف شوند؟ این کار قابل بازگشت نیست.')) return;
     if (isStreaming) {
       abortControllerRef.current?.abort();
     }
@@ -282,6 +284,38 @@ export default function DuckAIChatApp() {
       },
     ]);
     setActiveSessionId(freshId);
+  };
+
+  const handleTogglePin = (id: string) => {
+    setConversations((previous) => previous.map((conversation) =>
+      conversation.id === id ? { ...conversation, pinned: !conversation.pinned } : conversation
+    ));
+  };
+
+  const handleExportConversation = () => {
+    if (!activeSession.messages.length) return;
+    const lines = [`# ${activeSession.title}`, '', `مدل: ${activeSession.model}`, '', '---', ''];
+    for (const message of activeSession.messages) {
+      lines.push(`## ${message.role === 'user' ? 'شما' : 'SABI-AI'}${message.timestamp ? ` · ${message.timestamp}` : ''}`, '', message.text || '');
+      if (message.councilData?.members?.length) {
+        for (const member of message.councilData.members) lines.push('', `### ${member.name}`, '', member.text || '');
+      }
+      if (message.files?.length) lines.push('', `پیوست‌ها: ${message.files.map((file) => file.name).join('، ')}`);
+      if (message.images?.length || message.generatedImage) lines.push('', '[تصویر در این خروجی متنی درج نشده است]');
+      lines.push('', '---', '');
+    }
+    const url = URL.createObjectURL(new Blob([lines.join('\n')], { type: 'text/markdown;charset=utf-8' }));
+    const link = document.createElement('a');
+    link.href = url; link.download = `sabi-ai-${new Date().toISOString().slice(0,10)}.md`;
+    document.body.appendChild(link); link.click(); link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  const handleChooseStarter = (starter: string) => {
+    setDrawMode(false);
+    setCouncilMode(false);
+    setPrompt(starter);
+    window.setTimeout(() => document.getElementById('chat-prompt-textarea')?.focus(), 0);
   };
 
   const handleUploadImages = async (fileList: FileList) => {
@@ -1328,6 +1362,8 @@ ${memberOutputs[2]?.text}`;
     model: c.model,
     updatedAt: c.updatedAt,
     messageCount: c.messages.length,
+    pinned: c.pinned,
+    searchText: c.messages.map((message) => message.text || '').join(' '),
   }));
 
   return (
@@ -1338,6 +1374,7 @@ ${memberOutputs[2]?.text}`;
         activeSessionId={activeSession.id}
         onSelectSession={setActiveSessionId}
         onNewChat={handleNewChat}
+        onTogglePin={handleTogglePin}
         onRenameSession={handleRenameSession}
         onDeleteSession={handleDeleteSession}
         onClearAllSessions={handleClearAllSessions}
@@ -1376,6 +1413,11 @@ ${memberOutputs[2]?.text}`;
           </div>
 
           <div className="flex items-center gap-1.5 shrink-0">
+            <button type="button" onClick={handleExportConversation} disabled={!activeSession.messages.length}
+              aria-label="دانلود متن گفتگو" title="دانلود متن گفتگو (Markdown)"
+              className="min-h-[40px] min-w-[40px] rounded-2xl flex items-center justify-center text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-200/60 dark:hover:bg-zinc-800 transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer">
+              <Download className="w-4 h-4" />
+            </button>
             <button
               type="button"
               onClick={handleNewChat}
@@ -1396,6 +1438,7 @@ ${memberOutputs[2]?.text}`;
             onEditMessage={handleEditMessage}
             onRegenerateMessage={handleRegenerateMessage}
             onOpenImageLightbox={setLightboxItem}
+            onChooseStarter={handleChooseStarter}
           />
           <div ref={feedEndRef} />
         </main>

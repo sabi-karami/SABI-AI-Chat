@@ -30,3 +30,6 @@ Based on https://github.com/DarkBytee/DuckAiChat (MIT license retained in LICENS
 
 ## Additional hostname 2026-11-09
 - https://ai.psmc.ir serves the same Next.js service directly (not a redirect). Cloudflare zone psmc.ir, proxied DNS A record eb6bbf4f18223fea574017f6e90e8661 to existing instance. Nginx /etc/nginx/sites-available/sabichat and /etc/nginx/conf.d/sabichat-limits.conf allow the hostname and its Origin. Multi-host self-signed origin cert /etc/nginx/sabichat-multi; both zones SSL Full. Browser localStorage is isolated by hostname.
+
+## Workspace features 2026-11-09
+- Search conversation titles and message text locally; pin/unpin conversations, sorted first; export current conversation as Markdown text (images not included); starter prompts fill the composer without sending; confirm before clearing all conversations. Browser-local per-domain storage remains unchanged.
